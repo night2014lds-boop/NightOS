@@ -1,28 +1,42 @@
 #!/usr/bin/env python3
-import json
 import socket
+import json
+import sys
 from threading import Thread
 
-class NightApiServer:
+class NightRestInterface:
     def __init__(self, port=9090):
         self.host = "127.0.0.1"
         self.port = port
+        self.running = True
 
-    def handle_client(self, conn):
-        req = conn.recv(1024).decode()
-        if "GET /status" in req:
-            res = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json.dumps({"status": "ONLINE"})
-            conn.sendall(res.encode())
-        conn.close()
+    def route_request(self, client_socket):
+        try:
+            raw_data = client_socket.recv(2048).decode("utf-8")
+            if "GET /health" in raw_data:
+                payload = json.dumps({"system": "nightOS", "status": "nominal"})
+                response = f"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {len(payload)}\r\n\r\n{payload}"
+                client_socket.sendall(response.encode("utf-8"))
+        except Exception:
+            pass
+        finally:
+            client_socket.close()
 
-    def boot(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((self.host, self.port))
-        s.listen(5)
-        while True:
-            c, a = s.accept()
-            Thread(target=self.handle_client, args=(c,)).start()
+    def start_server(self):
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            server.bind((self.host, self.port))
+            server.listen(10)
+        except Exception:
+            return
+        while self.running:
+            try:
+                conn, _ = server.accept()
+                Thread(target=self.route_request, args=(conn,)).start()
+            except KeyboardInterrupt:
+                self.running = False
+        server.close()
 
 if __name__ == "__main__":
-    pass
+    api = NightRestInterface()
