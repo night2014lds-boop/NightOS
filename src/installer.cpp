@@ -23,9 +23,9 @@ public:
     void prepare_repositories() {
         std::ofstream sources("/etc/apt/sources.list", std::ios::trunc);
         if (sources.is_open()) {
-            sources << "deb http://debian.org bookworm main contrib non-free non-free-firmware\n";
-            sources << "deb http://debian.org bookworm-updates main contrib non-free non-free-firmware\n";
-            sources << "deb http://debian.org bookworm-security main contrib non-free non-free-firmware\n";
+            sources << "deb http:
+            sources << "deb http:
+            sources << "deb http:
             sources.close();
         }
         std::system("apt-get update -y");
