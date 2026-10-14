@@ -1,5 +1,13 @@
 # nightOS — Monolithic Operating System Architecture
 
+<p align="left">
+  <img src="https://shields.io" alt="Debian Base"/>
+  <img src="https://shields.io" alt="Python Engine"/>
+  <img src="https://shields.io" alt="C++ Framework"/>
+  <img src="https://shields.io" alt="C Core"/>
+  <img src="https://shields.io" alt="Bash Script"/>
+</p>
+
 nightOS is a high-performance, modular operating system abstraction built directly on top of the rock-solid Debian GNU/Linux core ecosystem. The platform enforces maximum hardware optimization by stripping downstream bloat and shipping with a pure, vanilla XFCE desktop environment layer integrated alongside low-level system daemons developed in C++, C, and Python.
 
 ## Technical Infrastructure
